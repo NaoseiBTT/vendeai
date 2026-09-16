@@ -1,19 +1,6 @@
-# Dependências
 node_modules/
-
-# Build e Saída
 dist/
-*.tsbuildinfo
-
-# Logs e Ambientes
-*.log
 .env
 .env.*
 !.env.example
-
-# IDEs e Editores
-.vscode/
-.idea/
-
-# Arquivos de Cobertura de Testes (se usar Vitest/Jest)
 coverage/
