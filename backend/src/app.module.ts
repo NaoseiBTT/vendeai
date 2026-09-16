@@ -20,6 +20,9 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       database: process.env.DB_NAME || 'vendeai',
       autoLoadEntities: true,
       synchronize: true,
+      ssl: {
+        rejectUnauthorized: false, // Necessário para aceitar o certificado SSL do Aiven
+      },
     }),
 
     ProductsModule,
