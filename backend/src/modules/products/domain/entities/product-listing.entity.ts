@@ -4,27 +4,26 @@ export enum ProductListingStatus {
     INACTIVE = "INACTIVE"
 }
 
-
 export interface CreateProductListingData {
-    title:string,
+    title: string,
     description: string
-    priceInCents:number
-    sellerId:string
-    categoryId:string
+    priceInCents: number
+    sellerId: string
+    categoryId: string
 }
 
-interface ProductListingData extends CreateProductListingData{
-    status:ProductListingStatus
+interface ProductListingData extends CreateProductListingData {
+    status: ProductListingStatus
+    phone?: string // <-- Adicionado como opcional para vir no JOIN do repositório
 }
 
 export class ProductListing {
 
     private constructor(
         private readonly data: ProductListingData,
-        
     ){}
 
-    static create(data: CreateProductListingData): ProductListing{
+    static create(data: CreateProductListingData): ProductListing {
         if(!data.title.trim()){
             throw new Error("O titulo do anuncio é obrigatorio")
         }
@@ -45,47 +44,45 @@ export class ProductListing {
             throw new Error("A categoria é obrigatoria")
         }
 
-        
-
         return new ProductListing({
             ...data,
-            status:ProductListingStatus.AVAILABLE
+            status: ProductListingStatus.AVAILABLE
         })
-
-        
     }
 
-    static restore(data: ProductListingData):ProductListing{
+    static restore(data: ProductListingData): ProductListing {
         return new ProductListing(data)
     }
-    
 
-    get status(): ProductListingStatus{
+    get status(): ProductListingStatus {
         return this.data.status
     }
 
-    get title(): string{
+    get title(): string {
         return this.data.title
     }
 
-    get description(): string{
+    get description(): string {
         return this.data.description
     }
 
-    get priceInCents(): number{
+    get priceInCents(): number {
         return this.data.priceInCents
     }
 
-    get sellerId(): string{
+    get sellerId(): string {
         return this.data.sellerId
     }
 
-    get categoryId(): string{
+    get categoryId(): string {
         return this.data.categoryId
     }
 
+    get phone(): string | undefined {
+        return this.data.phone // <-- Getter para acessar o telefone do vendedor
+    }
 
-    markAsSold():void{
+    markAsSold(): void {
         this.data.status = ProductListingStatus.SOLD
     }
 }

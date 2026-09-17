@@ -1,16 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { WhatsappButton } from '@/components/WhatsappButton';
 
+// Ajuste a interface para o formato plano direto
 interface Anuncio {
-  data: {
-    title: string
-    description: string
-    priceInCents: number
-    sellerId: string
-    categoryId: string
-    status: string
-  }
+  title: string
+  description: string
+  priceInCents: number
+  sellerId: string
+  categoryId: string
+  status: string
+  phone?: string
 }
 
 export default function Anuncios() {
@@ -38,81 +39,62 @@ export default function Anuncios() {
 
   return (
     <main className="min-h-screen bg-gray-100">
-
       <header className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-
           <div>
-            <h1 className="text-2xl font-bold text-blue-600">
-              VendeAí
-            </h1>
-
-            <p className="text-sm text-gray-500">
-              O marketplace do seu bairro
-            </p>
+            <h1 className="text-2xl font-bold text-blue-600">VendeAí</h1>
+            <p className="text-sm text-gray-500">O marketplace do seu bairro</p>
           </div>
-
-          <a
-            href="/criar-anuncio"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-          >
+          <a href="/criar-anuncio" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
             Criar anúncio
           </a>
-
         </div>
       </header>
 
       <section className="max-w-6xl mx-auto px-6 py-10">
-
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">
-          Anúncios
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-8">Anúncios</h2>
 
         {anuncios.length === 0 ? (
-          <p className="text-gray-500">
-            Nenhum anúncio encontrado.
-          </p>
+          <p className="text-gray-500">Nenhum anúncio encontrado.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
             {anuncios.map((anuncio, index) => (
+              <div key={index} className="bg-white rounded-2xl shadow-sm border p-6 flex flex-col justify-between">
+                <div>
+                  <div className="mb-4">
+                    <span className="text-sm text-blue-600 font-medium">
+                      {anuncio.categoryId}
+                    </span>
+                  </div>
 
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-sm border p-6"
-              >
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {anuncio.title}
+                  </h3>
 
-                <div className="mb-4">
-                  <span className="text-sm text-blue-600 font-medium">
-                    {anuncio.data.categoryId}
-                  </span>
+                  <p className="text-gray-600 mt-2">
+                    {anuncio.description}
+                  </p>
+
+                  <p className="text-2xl font-bold text-green-600 mt-5">
+                    R$ {(anuncio.priceInCents / 100).toFixed(2)}
+                  </p>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900">
-                  {anuncio.data.title}
-                </h3>
+                <div className="mt-6 pt-4 border-t">
+                  <div className="text-sm text-gray-500 mb-4">
+                    Vendedor ID: {anuncio.sellerId}
+                  </div>
 
-                <p className="text-gray-600 mt-2">
-                  {anuncio.data.description}
-                </p>
-
-                <p className="text-2xl font-bold text-green-600 mt-5">
-                  R$ {(anuncio.data.priceInCents / 100).toFixed(2)}
-                </p>
-
-                <div className="border-t mt-5 pt-4 text-sm text-gray-500">
-                  Vendedor: {anuncio.data.sellerId}
+                  <WhatsappButton 
+                    phone={anuncio.phone || "5587999999999"}
+                    productName={anuncio.title} 
+                  />
                 </div>
-
               </div>
-
             ))}
-
           </div>
         )}
-
       </section>
-
     </main>
   )
 }

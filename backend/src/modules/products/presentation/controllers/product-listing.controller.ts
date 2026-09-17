@@ -21,7 +21,17 @@ export class ProductListingController {
 
     
     @Get()
-    async findAll(){
-        return this.findAllProductListingUseCase.execute()
+    async findAll() {
+        const listings = await this.findAllProductListingUseCase.execute();
+        
+        return listings.map((product) => ({
+            title: product.title,
+            description: product.description,
+            priceInCents: product.priceInCents,
+            sellerId: product.sellerId,
+            categoryId: product.categoryId,
+            status: product.status,
+            phone: product.phone,
+        }));
     }
 }

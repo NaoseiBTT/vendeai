@@ -4,8 +4,7 @@ import { ProductListing } from "../../../../domain/entities/product-listing.enti
 import { ProductListingSchema } from "../entities/product-listing-schema.js";
 import { InjectRepository } from "@nestjs/typeorm";
 
-
-export class ProductListingTypeOrmRepository implements ProductListingRepository{
+export class ProductListingTypeOrmRepository implements ProductListingRepository {
 
     constructor(
         @InjectRepository(ProductListingSchema)
@@ -13,7 +12,6 @@ export class ProductListingTypeOrmRepository implements ProductListingRepository
     ){}
     
     async create(productListing: ProductListing): Promise<void> {
-        
         const listing = this.repository.create({
             title: productListing.title,
             description: productListing.description,
@@ -27,18 +25,23 @@ export class ProductListingTypeOrmRepository implements ProductListingRepository
     }
 
     async findAll(): Promise<ProductListing[]> {
-        const listings = await this.repository.find()
+        const listings = await this.repository.createQueryBuilder("product")
+            .leftJoinAndSelect("users", "user", "user.id = product.sellerId")
+            .getRawAndEntities();
 
-        return listings.map((listing)=>
-            ProductListing.restore({
+        return listings.entities.map((listing, index) => {
+            const rawData = listings.raw[index];
+            const sellerPhone = rawData?.user_phone || rawData?.phone || "";
+
+            return ProductListing.restore({
                 title: listing.title,
                 description: listing.description,
                 priceInCents: listing.priceInCents,
                 sellerId: listing.sellerId,
                 categoryId: listing.categoryId,
                 status: listing.status,
-            })
-        
-        )
+                phone: sellerPhone, // Injete aqui se sua entidade aceitar o campo phone
+            });
+        });
     }
 }
