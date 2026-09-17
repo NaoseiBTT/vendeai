@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { WhatsappButton } from '@/components/WhatsappButton';
 
-// Ajuste a interface para o formato plano direto
+// Ajuste a interface para o formato plano direto.
 interface Anuncio {
   title: string
   description: string
