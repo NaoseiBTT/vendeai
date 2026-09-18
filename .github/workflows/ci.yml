@@ -69,7 +69,5 @@ jobs:
 
       - name: SonarQube Cloud
         uses: SonarSource/sonarqube-scan-action@v6
-        with:
-          projectBaseDir: backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
