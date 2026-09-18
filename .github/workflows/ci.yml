@@ -1,19 +1,17 @@
-name: CI frontend and backend
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  
-jobs:
-  teste-and-build:
-    runs-on: ubuntu-latest
 
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
-        
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,41 +22,54 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-        
-      - name: Install dependencies
+
+      - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build frontend
         run: npm run build
 
   backend:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: backend
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: backend/package-lock.json
-      
-      - name: Install dependencies
+
+      - name: Check backend files
+        run: |
+          echo "PACKAGE.JSON"
+          grep '"typescript"' backend/package.json
+          echo "LOCKFILE"
+          grep -A2 '"node_modules/typescript"' backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
         run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Run backend tests with coverage
+        working-directory: backend
+        run: npm run test:cov
 
-      - name: Build
+      - name: Check coverage
+        working-directory: backend
+        run: |
+          ls -la coverage
+          ls -la coverage/lcov.info
+
+      - name: Build backend
+        working-directory: backend
         run: npm run build
 
       - name: SonarQube Cloud
         uses: SonarSource/sonarqube-scan-action@v6
+        with:
+          projectBaseDir: backend
         env:
-          SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
