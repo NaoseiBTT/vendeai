@@ -10,25 +10,19 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
 @Module({
   imports: [
-
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST || 'localhost',
-      port: Number(process.env.DB_PORT) || 3306,
-      username: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || 'root',
-      database: process.env.DB_NAME || 'vendeai',
+      type: 'mysql', // Mantém mysql
+      url: process.env.DATABASE_URL, // Lê a URI inteira do Aiven
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: true, // Cria as tabelas automaticamente
       ssl: {
-        rejectUnauthorized: false, // Necessário para aceitar o certificado SSL do Aiven
+        rejectUnauthorized: false, // OBRIGATÓRIO para o Aiven (ssl-mode=REQUIRED)
       },
     }),
 
     ProductsModule,
     UsersModule,
-    // Distributed tracing, auto-correlated logs, request/job metrics, error
-    // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
+
     ObserveModule.forRoot({
       appKey: 'YOUR_APP_KEY',
       appSecret: 'YOUR_APP_SECRET',
