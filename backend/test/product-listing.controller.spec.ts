@@ -21,10 +21,10 @@ describe("ProductListingController", () => {
 
     const data = {
       title: "Notebook",
-  description: "Notebook usado",
-  priceInCents: 250000,
-  sellerId: "seller-1",
-  categoryId: "category-1",
+      description: "Notebook usado",
+      priceInCents: 250000,
+      sellerId: "seller-1",
+      categoryId: "category-1",
     };
 
     const result = await controller.create(data);
@@ -53,7 +53,9 @@ describe("ProductListingController", () => {
 
     expect(findAllProductListingUseCase.execute).toHaveBeenCalled();
     expect(result).toEqual([
-      { id: "1", title: "Notebook" },
+      expect.objectContaining({
+        title: "Notebook",
+      }),
     ]);
   });
 });

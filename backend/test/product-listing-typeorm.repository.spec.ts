@@ -39,17 +39,25 @@ describe("ProductListingTypeOrmRepository", () => {
   });
 
   it("deve buscar todos os anúncios", async () => {
+    const mockQueryBuilder = {
+      leftJoinAndSelect: vi.fn().mockReturnThis(),
+      getRawAndEntities: vi.fn().mockResolvedValue({
+        raw: [],
+        entities: [
+          {
+            title: "Notebook",
+            description: "Notebook usado",
+            priceInCents: 250000,
+            sellerId: "seller-1",
+            categoryId: "category-1",
+            status: "AVAILABLE",
+          },
+        ],
+      }),
+    };
+
     const repository = {
-      find: vi.fn().mockResolvedValue([
-        {
-          title: "Notebook",
-          description: "Notebook usado",
-          priceInCents: 250000,
-          sellerId: "seller-1",
-          categoryId: "category-1",
-          status: "AVAILABLE",
-        },
-      ]),
+      createQueryBuilder: vi.fn().mockReturnValue(mockQueryBuilder),
     };
 
     const productListingRepository =
@@ -57,7 +65,8 @@ describe("ProductListingTypeOrmRepository", () => {
 
     const result = await productListingRepository.findAll();
 
-    expect(repository.find).toHaveBeenCalled();
+    expect(repository.createQueryBuilder).toHaveBeenCalledWith("product");
+    expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalled();
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe("Notebook");
   });
